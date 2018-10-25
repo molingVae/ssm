@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+					   http://www.springframework.org/schema/beans/spring-beans.xsd
+					   http://www.springframework.org/schema/mvc 
+					   http://www.springframework.org/schema/mvc/spring-mvc.xsd 
+					   http://www.springframework.org/schema/aop 
+					   http://www.springframework.org/schema/aop/spring-aop.xsd
+					   http://www.springframework.org/schema/context 
+					   http://www.springframework.org/schema/context/spring-context.xsd
+					   http://www.springframework.org/schema/tx 
+					   http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<!-- 扫描controller -->
+	<context:component-scan base-package="com.controller"></context:component-scan>
+
+	<!-- 配置注解映射器和注解适配器 -->
+	<mvc:annotation-driven conversion-service="conversionService"></mvc:annotation-driven>
+	<!-- 视图解析器解析jsp解析，默认使用jstl标签，classpath下的得有jstl的包 -->
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<!-- 配置jsp路径的前缀 -->
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<!-- 配置jsp路径的后缀 -->
+		<property name="suffix" value=".jsp" />
+
+
+	</bean>
+	<!-- 全局异常处理器 -->
+	<bean class="com.exception.CustomExceptionResvolver"></bean>
+	<!-- 拦截器 -->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<!--不拦截-->
+			<mvc:exclude-mapping path="/reqUsers.action" />
+			<bean class="com.Interceptor.LoginInterceptor"></bean>
+		</mvc:interceptor>
+</mvc:interceptors>
+
+<!-- conversionService -->
+	<bean id="conversionService"
+		class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+		<!-- 日期转换器 -->
+		<property name="converters">
+			<list>
+				<bean class="com.converter.CustomDateConverter"/>
+			</list>
+		</property>
+	</bean>
+
+</beans>
